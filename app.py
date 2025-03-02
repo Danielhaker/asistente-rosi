@@ -6,7 +6,7 @@ from flask_cors import CORS
 from gtts import gTTS
 import uuid
 # En la parte superior de app.py
-# from ai_prompts import ai_query
+from ai_prompts import ai_query
 import time
 
 app = Flask(__name__)
@@ -49,7 +49,7 @@ def query():
     
     try:
         # Generate response using Gemini
-        query = user_query
+        query = ai_query + user_query 
         print(f"Received query: {query}")
 
         try:
