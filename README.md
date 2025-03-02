@@ -1,5 +1,7 @@
 # Asistente Rosa Molas
 
+## Suscribete en Youtube a: @MisteryMC-m1necraft
+
 ## Descripción
 Un asistente de IA inteligente basado en la API de Gemini, con capacidades avanzadas de:
 + Conversación interactiva
