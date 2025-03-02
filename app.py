@@ -1,12 +1,12 @@
 import os
 import speech_recognition as sr
 import google.generativeai as genai
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_cors import CORS
 from gtts import gTTS
 import uuid
 # En la parte superior de app.py
-from ai_prompts import get_ai_query
+# from ai_prompts import ai_query
 import time
 
 app = Flask(__name__)
@@ -21,9 +21,19 @@ generation_config = {
   "top_p": 0.95,
   "top_k": 40,
   "max_output_tokens": 8192,
-  "response_mime_type": "text/plain",
+# 
+
+
+
+
 }
 
+available_models = genai.list_models()
+flash_models = [model.name for model in available_models]
+print("Available Flash Models:")
+for model_name in flash_models:
+    print(model_name)
+    
 model = genai.GenerativeModel(
   model_name="gemini-2.0-flash-exp",
   generation_config=generation_config,
@@ -39,22 +49,54 @@ def query():
     
     try:
         # Generate response using Gemini
-    
+        query = user_query
+        print(f"Received query: {query}")
 
-        query = ai_query + user_query
+        try:
+            # Attempt to generate content
+            response = model.generate_content(query)
+            
+            # Debug print the entire response object
+            print(f"Full response object type: {type(response)}")
+            print(f"Response dir(): {dir(response)}")
 
-        response = model.generate_content(query)
-        
-        # Text to Speech
-        tts = gTTS(text=response.text, lang='es')
-        audio_filename = f'static/audio_{uuid.uuid4()}.mp3'
-        tts.save(audio_filename)
-        
-        return jsonify({
-            'text': response.text,
-            'audio_path': audio_filename
-        })
+            # Check if response has text attribute
+            if hasattr(response, 'text'):
+                print(f"Received response text: {response.text}")
+            else:
+                print("Response does not have 'text' attribute")
+                print(f"Response attributes: {vars(response) if hasattr(response, '__dict__') else 'No vars available'}")
+
+            # Validate response
+            if not response or not hasattr(response, 'text') or not response.text:
+                return jsonify({
+                    'error': 'No se generó respuesta válida',
+                    'details': 'La IA no pudo procesar la consulta'
+                }), 500
+
+            # Text to Speech
+            tts = gTTS(text=response.text, lang='es')
+            audio_filename = f'static/audio_{uuid.uuid4()}.mp3'
+            tts.save(audio_filename)
+            
+            return jsonify({
+                'text': response.text,
+                'audio_path': audio_filename
+            })
+
+        except Exception as generation_error:
+            print(f"Error generating content: {generation_error}")
+            import traceback
+            traceback.print_exc()
+            return jsonify({
+                'error': 'Error al generar contenido',
+                'details': str(generation_error)
+            }), 500
+
     except Exception as e:
+        print(f"Unexpected error in query route: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'error': str(e)
         }), 500
@@ -97,5 +139,14 @@ def voice_query():
     listen_for_keyword()
     return jsonify({'message': 'Esperando palabra clave...'})
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 
+                               'logo.png', mimetype='image/png')
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=80)
+    try:
+        port = int(os.getenv('PORT', 5000))  # Default to port 5000
+        app.run(host='0.0.0.0', debug=True, port=port)
+    except Exception as e:
+        print(f"Error starting the server: {e}")
