@@ -8,6 +8,7 @@ import uuid
 # En la parte superior de app.py
 from ai_prompts import ai_query
 import time
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -39,9 +40,16 @@ model = genai.GenerativeModel(
   generation_config=generation_config,
 )
 
+def get_current_datetime():
+    """
+    Returns the current date and time in a human-readable format.
+    """
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    current_datetime = get_current_datetime()
+    return render_template('index.html', current_datetime=current_datetime)
 
 @app.route('/query', methods=['POST'])
 def query():
