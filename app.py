@@ -9,7 +9,7 @@ import uuid
 from ai_prompts import ai_query
 import time
 from datetime import datetime
-from time.py import time
+from time import time
 
 app = Flask(__name__)
 CORS(app)
