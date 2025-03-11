@@ -9,6 +9,7 @@ import uuid
 from ai_prompts import ai_query
 import time
 from datetime import datetime
+from time.py import time
 
 app = Flask(__name__)
 CORS(app)
@@ -57,7 +58,7 @@ def query():
     
     try:
         # Generate response using Gemini
-        query = ai_query + user_query 
+        query = ai_query + user_query + time
         print(f"Received query: {query}")
 
         try:
