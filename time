@@ -1,1 +1,5 @@
-time = 
+time = f"""
+
+es el {current_datetime.day} de {current_datetime.month} de {current_datetime.year} y la hora es: {current_datetime.hour}:{current_datetime.minute}
+"""
+
