@@ -10,10 +10,8 @@ de clases y la comida del comedor (también a todo lo que te pregunten incluyend
 
 - Es el {current_datetime.day} de {current_datetime.month} de {current_datetime.year} Y la hora es: {current_datetime.hour} : {current_datetime.minute}
 
-# ... rest of the code remains the same
-"""
-
-El horario es este:
+# El horario es este:
+horario_description = """
 {
   "horario": {
     "Lunes": [
@@ -69,9 +67,10 @@ El horario es este:
     ]
   }
 }
+"""
 
-Y la comida es esta:
-
+# Y la comida es esta:
+menu_description = """
 {
   "Menú": {
     "Lunes 6":  "Festivo" ,
