@@ -7,9 +7,10 @@ from gtts import gTTS
 import uuid
 # En la parte superior de app.py
 from ai_prompts import ai_query
-import time
+from ai_time import time_prompt
 from datetime import datetime
-from time import time
+import time
+
 
 app = Flask(__name__)
 CORS(app)
@@ -58,7 +59,7 @@ def query():
     
     try:
         # Generate response using Gemini
-        query = ai_query + user_query + time
+        query = ai_query + user_query + time_prompt
         print(f"Received query: {query}")
 
         try:
@@ -135,7 +136,7 @@ def listen_for_keyword():
                 print("No se entendió lo que dijiste. Intenta de nuevo.")
             except sr.RequestError:
                 print("No hay conexión con el servicio de Google. Intenta más tarde.")
-            time.sleep(1)  # Pausa breve para evitar sobrecargar el CPU
+            time.sleep(0.5)  # Pausa breve para evitar sobrecargar el CPU
 
 def process_query(query):
     # Aquí va el código que ejecuta la lógica de la consulta con la respuesta

@@ -8,6 +8,6 @@ locale.setlocale(locale.LC_TIME, '')
 current_datetime = datetime.utcnow() + timedelta(hours=1)
 
 # Formatear la fecha y la hora según la configuración regional
-time = f"""
-Es el {current_datetime.day} del {current_datetime.month} de {current_datetime.year} y la hora es: {current_datetime.hour}:{current_datetime.minute}
+time_prompt = f"""
+La fecha actual es: El {current_datetime.strftime('%A')} {current_datetime.day} del {current_datetime.month} de {current_datetime.year} y la hora es: {current_datetime.hour}:{current_datetime.minute}
 """
